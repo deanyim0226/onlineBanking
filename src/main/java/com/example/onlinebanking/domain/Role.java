@@ -2,31 +2,30 @@ package com.example.onlinebanking.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Branch {
+@Entity
+public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long branchId;
+    @NotNull
+    private Long roleId;
 
     @NotEmpty
-    @Column(name="branchName")
-    private String branchName;
+    private String name;
 
-    @Embedded
-    private Address address;
-
-    @OneToMany(mappedBy = "accountBranch")
-    private List<Account> branchAccount;
-
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users = new ArrayList<>();
 }
