@@ -43,6 +43,8 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
 
     )
+
+    //branch -> role -> user -> customer -> account -> deposit
     //role -> user -> customer/branch -> account
     private List<Role> roles = new ArrayList<>();
 

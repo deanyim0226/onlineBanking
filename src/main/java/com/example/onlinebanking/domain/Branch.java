@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,6 @@ public class Branch {
     private Address address;
 
     @OneToMany(mappedBy = "accountBranch")
-    private List<Account> branchAccount;
+    private List<Account> branchAccount = new ArrayList<>();;
 
 }

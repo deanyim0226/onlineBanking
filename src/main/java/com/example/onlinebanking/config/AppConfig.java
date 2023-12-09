@@ -4,6 +4,7 @@ package com.example.onlinebanking.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.web.servlet.ViewResolver;
@@ -15,15 +16,21 @@ import java.util.Properties;
 @Configuration
 public class AppConfig {
 
-    @Autowired
-    DataSource dataSource;
+    @Bean DataSource dataSource(){
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setUrl("jdbc:mysql://localhost:3306/onlinebanking?useSSL=false&serverTimezone=UTC");
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUsername("root");
+        dataSource.setPassword("");
 
+        return dataSource;
+    }
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(){
 
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactory.setJpaProperties(properties());
-        entityManagerFactory.setDataSource(dataSource);
+        entityManagerFactory.setDataSource(dataSource());
         entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         entityManagerFactory.setPackagesToScan("com.example.onlinebanking.domain");
 
@@ -41,8 +48,8 @@ public class AppConfig {
     @Bean
     public ViewResolver viewResolver(){
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setSuffix("/WEB-INF/jsp/");
-        viewResolver.setPrefix(".jsp");
+        viewResolver.setPrefix("/WEB-INF/jsp/");
+        viewResolver.setSuffix(".jsp");
 
         return viewResolver;
     }
