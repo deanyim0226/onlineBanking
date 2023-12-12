@@ -4,10 +4,13 @@ import com.example.onlinebanking.domain.Role;
 import com.example.onlinebanking.domain.User;
 import com.example.onlinebanking.service.RoleService;
 import com.example.onlinebanking.service.UserService;
+import com.example.onlinebanking.validation.UserValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,14 @@ public class UserController {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    UserValidator userValidator;
+
+    //custom validation
+    @InitBinder
+    public void initBinder(WebDataBinder binder){
+        binder.addValidators(userValidator);
+    }
     @RequestMapping("/userForm")
     public ModelAndView userForm(User user){
         ModelAndView mav = new ModelAndView("userForm");
@@ -38,6 +49,7 @@ public class UserController {
         if(bs.hasErrors()){
             System.out.println("error while saving users");
             mav.addObject("users",userService.findAll());
+            mav.addObject("hasError",true);
             return mav;
         }
         userService.save(user);
@@ -63,6 +75,9 @@ public class UserController {
 
         mav.addObject("user",retrievedUser);
         mav.addObject("users",userService.findAll());
+        System.out.println(retrievedUser.getRoles());
+        mav.addObject("retrievedRole", retrievedUser.getRoles());
+        mav.addObject("roles",roleService.findAll());
         /*
 
          */

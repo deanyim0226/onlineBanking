@@ -11,17 +11,18 @@
 
 </head>
 <body>
-<!--
-    private Long branchId;
-    private String branchName;
-    private Address address;
-    private List<Account> branchAccount;
--->
+
     <div align="center">
         <h1>Branch Form</h1>
         <f:form action="saveBranch" method="POST" modelAttribute="branch">
 
         <table>
+            <c:if test="${hasError}">
+                <tr>
+                    <td>Errors</td>
+                    <td><f:errors path="*"></f:errors></td>
+                </tr>
+            </c:if>
             <tr>
                 <td>ID</td>
                 <td><f:input path="branchId"/></td>
@@ -32,7 +33,7 @@
             </tr>
 
             <tr>
-                <td>BRANCH ADDRESS</td>
+                <td><b>BRANCH ADDRESS</b></td>
             </tr>
             <tr>
                 <td>ADDRESS LINE1</td>

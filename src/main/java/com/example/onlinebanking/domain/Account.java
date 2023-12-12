@@ -28,7 +28,7 @@ public class Account {
     //@DateTimeFormat(pattern = "dd-mm-yyyy")
     private LocalDate accountDateOpened;
 
-    private String accountFolder;
+    private String accountHolder;
 
     private double accountBalance;
 

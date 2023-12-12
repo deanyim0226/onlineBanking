@@ -24,6 +24,12 @@
         <f:form action="saveUser" method="POST" modelAttribute="user">
 
             <table>
+                <c:if test="${hasError}">
+                    <tr>
+                        <td>Errors</td>
+                        <td><f:errors path="*"></f:errors></td>
+                    </tr>
+                </c:if>
                 <tr>
                     <td>ID</td>
                     <td><f:input path="userId"/></td>
@@ -45,9 +51,18 @@
                     <td>Roles</td>
                     <td>
                         <c:forEach items="${roles}" var="role">
-                            <f:checkbox path="roles" label="${role.getName()}" value="${role.getRoleId()}"/>
+                            <c:if test="${retrievedRole.contains(role)}">
+                                <f:checkbox path="roles" label="${role.getName()}" value="${role.getRoleId()}" checked="ture"/>
+                            </c:if>
+                            <c:if test="${!retrievedRole.contains(role)}">
+                                <f:checkbox path="roles" label="${role.getName()}" value="${role.getRoleId()}"/>
+                            </c:if>
+
                         </c:forEach>
                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center"><input class="btn btn-primary" type="submit" value="submit"/> </td>
                 </tr>
 
             </table>
@@ -64,6 +79,7 @@
                 <th>PASSWORD</th>
                 <th>EMAIL</th>
                 <th>ROLES</th>
+                <th colspan="2">Actions</th>
             </tr>
 
             <c:forEach items="${users}" var="user">

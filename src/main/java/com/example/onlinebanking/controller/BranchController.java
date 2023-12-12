@@ -2,11 +2,14 @@ package com.example.onlinebanking.controller;
 
 import com.example.onlinebanking.domain.Branch;
 import com.example.onlinebanking.service.BranchService;
+import com.example.onlinebanking.validation.BranchValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +21,13 @@ public class BranchController {
     @Autowired
     BranchService branchService;
 
+    @Autowired
+    BranchValidator branchValidator;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder){
+        binder.addValidators(branchValidator);
+    }
 
     @RequestMapping("/branchForm")
     public ModelAndView branchForm(Branch branch){
@@ -35,6 +45,7 @@ public class BranchController {
 
         if(br.hasErrors()){
             System.out.println("error while saving branch");
+            mav.addObject("hasError",true);
             return mav;
         }
 
@@ -47,7 +58,8 @@ public class BranchController {
     @RequestMapping("/deleteBranch")
     public ModelAndView deleteBranch(Branch branch){
         ModelAndView mav = new ModelAndView("branchForm");
-        //we need to work on
+        //branchService.deleteById(branch.getBranchId());
+
         return mav;
     }
 
