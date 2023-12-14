@@ -74,6 +74,7 @@
         <h2>User Record</h2>
         <table class="table table-dark table-striped">
             <tr>
+
                 <th>ID</th>
                 <th>NAME</th>
                 <th>PASSWORD</th>
@@ -84,6 +85,7 @@
 
             <c:forEach items="${users}" var="user">
                 <tr>
+
                     <td>${user.getUserId()}</td>
                     <td>${user.getUsername()}</td>
                     <td>${user.getPassword()}</td>

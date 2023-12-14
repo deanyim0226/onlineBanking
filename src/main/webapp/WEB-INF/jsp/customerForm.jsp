@@ -7,32 +7,12 @@
 <head>
     <meta charset="ISO-8859-1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <title>Branch Form</title>
+    <title>Customer Form</title>
 
 </head>
 <body>
 
 <!--
-   @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
-
-    @NotEmpty
-    private String customerName;
-
-    @Enumerated
-    private Gender gender;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate customerDOB;
-
-    private String customerMobileNo;
-
-    @Embedded
-    private Address customerAddress;
-
-    private String customerRealId;
-
     @OneToMany(mappedBy = "accountCustomer")
     private List<Account> customerAccounts = new ArrayList<>();
 
@@ -45,6 +25,18 @@
     <h1>Customer Form</h1>
     <f:form action="saveCustomer" method="POST" modelAttribute="customer">
     <table>
+        <c:if test="${hasError}">
+
+            <tr>
+                <td>Errors</td>
+                <td><f:errors path="*"></f:errors></td>
+            </tr>
+
+        </c:if>
+        <tr>
+            <td>USER ID</td>
+            <td><f:input path="user.userId"></f:input></td>
+        </tr>
         <tr>
             <td>ID</td>
             <td><f:input path="customerId"></f:input></td>
@@ -55,7 +47,16 @@
         </tr>
         <tr>
             <td>GENDER</td>
-            <td><f:input path="gender"></f:input></td>
+            <td>
+                <c:forEach items="${genders}" var="g">
+                    <c:if test="${selectedGender == g}">
+                        <f:checkbox path="gender" label="${g}" value="${g}" checked="checked"></f:checkbox>
+                    </c:if>
+                    <c:if test="${selectedGender != g}">
+                        <f:checkbox path="gender" label="${g}" value="${g}"></f:checkbox>
+                    </c:if>
+            </c:forEach>
+            </td>
         </tr>
         <tr>
             <td>DOB</td>
@@ -105,8 +106,9 @@
 
 <div align="center">
 
-    <table>
+    <table class="table table-dark table-striped" >
         <tr>
+            <th>USER ID</th>
             <th>ID</th>
             <th>NAME</th>
             <th>GENDER</th>
@@ -119,13 +121,20 @@
 
         <tr>
             <c:forEach items="${customers}" var="customer">
+                <td>${customer.getUser().getUserId()}</td>
                 <td>${customer.getCustomerId()}</td>
                 <td>${customer.getCustomerName()}</td>
-                <!--GENDER-->
-                <td>${customer.getCustomeDOB()}</td>
+                <td>${customer.getGender()}</td>
+                <td>${customer.getCustomerDOB()}</td>
                 <td>${customer.getCustomerMobileNo()}</td>
                 <td>${customer.getCustomerRealId()}</td>
-                <!--CUSTOMER ADDRESS-->
+                <td>
+                        ${customer.getCustomerAddress().getAddressLine1()} ${customer.getCustomerAddress().getAddressLine2()},
+                        ${customer.getCustomerAddress().getCity()}, ${customer.getCustomerAddress().getState()}, ${customer.getCustomerAddress().getZipcode()}, ${customer.getCustomerAddress().getCountry()}
+                </td>
+
+                <td><a href="updateCustomer?customerId=${customer.getCustomerId()}">Update</a> </td>
+                <td><a href="deleteCustomer?customerId=${customer.getCustomerId()}">Delete</a> </td>
                 <!--List<Account> customerAccounts -->
                 <!--User user-->
             </c:forEach>

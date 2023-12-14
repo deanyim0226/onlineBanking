@@ -21,7 +21,7 @@ public class AppConfig {
         dataSource.setUrl("jdbc:mysql://localhost:3306/onlinebanking?useSSL=false&serverTimezone=UTC");
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUsername("root");
-        dataSource.setPassword("Oper8566");
+        dataSource.setPassword("");
 
         return dataSource;
     }

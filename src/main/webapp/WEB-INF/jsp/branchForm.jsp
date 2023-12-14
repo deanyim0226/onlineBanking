@@ -79,8 +79,8 @@
                 <c:forEach items="${branches}" var="branch">
                     <td>${branch.getBranchId()}</td>
                     <td>${branch.getBranchName()}</td>
-                    <td>${branch.getAddress().getAddressLine1()} ${branch.getAddress().getAddressLine2()}
-                            ${branch.getAddress().getCity()} ${branch.getAddress().getState()} ${branch.getAddress().getZipcode()} ${branch.getAddress().getCountry()}
+                    <td>${branch.getAddress().getAddressLine1()} ${branch.getAddress().getAddressLine2()},
+                            ${branch.getAddress().getCity()}, ${branch.getAddress().getState()}, ${branch.getAddress().getZipcode()}, ${branch.getAddress().getCountry()}
                     </td>
                     <td><a href="updateBranch?branchId=${branch.getBranchId()}">Update</a> </td>
                     <td><a href="deleteBranch?branchId=${branch.getBranchId()}">Delete</a> </td>

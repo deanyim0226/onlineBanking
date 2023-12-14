@@ -43,10 +43,10 @@ public class UserController {
     }
 
     @RequestMapping("/saveUser")
-    public ModelAndView saveUser(@Valid @ModelAttribute User user, BindingResult bs){
+    public ModelAndView saveUser(@Valid @ModelAttribute User user, BindingResult br){
         ModelAndView mav = new ModelAndView("userForm");
 
-        if(bs.hasErrors()){
+        if(br.hasErrors()){
             System.out.println("error while saving users");
             mav.addObject("users",userService.findAll());
             mav.addObject("hasError",true);

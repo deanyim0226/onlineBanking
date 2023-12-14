@@ -1,6 +1,7 @@
 package com.example.onlinebanking.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Branch {
     private String branchName;
 
     @Embedded
+    //@Valid
     private Address address;
 
     @OneToMany(mappedBy = "accountBranch")
