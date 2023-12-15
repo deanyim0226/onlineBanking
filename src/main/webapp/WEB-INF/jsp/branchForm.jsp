@@ -11,7 +11,18 @@
 
 </head>
 <body>
-
+    <div align="center">
+        <table>
+            <tr>
+                <td><a href="home">Home</a></td> <td> | </td>
+                <td><a href="userForm">UserForm</a></td> <td> | </td>
+                <td><a href="roleForm">RoleForm</a></td> <td> | </td>
+                <td><a href="branchForm">BranchForm</a></td> <td> | </td>
+                <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
+                <td><a href="accountForm">AccountForm</a></td>
+            </tr>
+        </table>
+    </div>
     <div align="center">
         <h1>Branch Form</h1>
         <f:form action="saveBranch" method="POST" modelAttribute="branch">
@@ -67,6 +78,7 @@
     </div>
 
     <div align="center">
+        <h2>Branch Record</h2>
         <table class="table table-dark table-striped">
             <tr>
                 <th>ID</th>

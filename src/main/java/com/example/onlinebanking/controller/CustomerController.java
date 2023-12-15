@@ -74,11 +74,9 @@ public class CustomerController {
     }
 
     @RequestMapping("/deleteCustomer")
-    public ModelAndView updateCustomer(Customer customer){
+    public ModelAndView deleteCustomer(Customer customer){
         ModelAndView mav = new ModelAndView("redirect:customerForm");
         // customerService.deleteById(customer.getCustomerId());
-
-
 
         return mav;
 

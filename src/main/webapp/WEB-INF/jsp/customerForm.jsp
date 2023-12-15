@@ -12,14 +12,19 @@
 </head>
 <body>
 
-<!--
-    @OneToMany(mappedBy = "accountCustomer")
-    private List<Account> customerAccounts = new ArrayList<>();
+<div align="center">
+    <table>
+        <tr>
+            <td><a href="home">Home</a></td> <td> | </td>
+            <td><a href="userForm">UserForm</a></td> <td> | </td>
+            <td><a href="roleForm">RoleForm</a></td> <td> | </td>
+            <td><a href="branchForm">BranchForm</a></td> <td> | </td>
+            <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
+            <td><a href="accountForm">AccountForm</a></td>
+        </tr>
+    </table>
+</div>
 
-    @OneToOne()
-    @JoinColumn(name = "userId")
-    private User user;
--->
 <div align="center">
 
     <h1>Customer Form</h1>
@@ -60,7 +65,7 @@
         </tr>
         <tr>
             <td>DOB</td>
-            <td><f:input path="customerDOB"></f:input></td>
+            <td><f:input path="customerDOB" type="date"></f:input></td>
         </tr>
         <tr>
             <td>MOBILE NO</td>
@@ -105,7 +110,7 @@
 </div>
 
 <div align="center">
-
+    <h2>Customer Record</h2>
     <table class="table table-dark table-striped" >
         <tr>
             <th>USER ID</th>

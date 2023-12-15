@@ -75,12 +75,9 @@ public class UserController {
 
         mav.addObject("user",retrievedUser);
         mav.addObject("users",userService.findAll());
-        System.out.println(retrievedUser.getRoles());
         mav.addObject("retrievedRole", retrievedUser.getRoles());
         mav.addObject("roles",roleService.findAll());
-        /*
 
-         */
 
         return mav;
     }

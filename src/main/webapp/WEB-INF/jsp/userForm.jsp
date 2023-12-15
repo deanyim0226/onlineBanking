@@ -12,13 +12,18 @@
 </head>
 <body>
 
-<!--
-    private Long userId;
-    private String username;
-    private String password;
-    private String email;
-    private List<Role> roles = new ArrayList<>();
--->
+    <div align="center">
+        <table>
+            <tr>
+                <td><a href="home">Home</a></td> <td> | </td>
+                <td><a href="userForm">UserForm</a></td> <td> | </td>
+                <td><a href="roleForm">RoleForm</a></td> <td> | </td>
+                <td><a href="branchForm">BranchForm</a></td> <td> | </td>
+                <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
+                <td><a href="accountForm">AccountForm</a></td>
+            </tr>
+        </table>
+    </div>
     <div align="center">
         <h1>User Form</h1>
         <f:form action="saveUser" method="POST" modelAttribute="user">

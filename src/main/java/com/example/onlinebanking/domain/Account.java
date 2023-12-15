@@ -25,7 +25,7 @@ public class Account {
     private AccountType accountType;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    //@DateTimeFormat(pattern = "dd-mm-yyyy")
+    //@DateTimeFormat(pattern = "mm-dd-yyyy")
     private LocalDate accountDateOpened;
 
     private String accountHolder;
