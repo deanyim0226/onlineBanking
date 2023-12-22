@@ -5,6 +5,7 @@ import com.example.onlinebanking.domain.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +29,20 @@ public class CustomerServiceImplementation implements CustomerService{
     public List<Customer> findAll() {
         return customerRepository.findAll();
     }
+
+    @Override
+    public Customer findByName(String loggedInUser) {
+        List<Customer> customerList = customerRepository.findAll();
+
+        for(Customer customer : customerList){
+
+            if(loggedInUser.equals(customer.getCustomerName())){
+                return customer;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void deleteById(Long branchId) {

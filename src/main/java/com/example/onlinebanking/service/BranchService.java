@@ -9,6 +9,7 @@ public interface BranchService{
 
     /*
     , create, read, update, and delete
+    other user only can see other branches
      */
     public Branch saveBranch(Branch branch);
 

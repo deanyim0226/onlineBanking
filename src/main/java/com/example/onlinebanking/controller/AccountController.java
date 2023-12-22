@@ -2,7 +2,10 @@ package com.example.onlinebanking.controller;
 
 import com.example.onlinebanking.domain.Account;
 import com.example.onlinebanking.domain.AccountType;
+import com.example.onlinebanking.domain.BankTransaction;
+import com.example.onlinebanking.domain.TransactionType;
 import com.example.onlinebanking.service.AccountService;
+import com.example.onlinebanking.service.BankTransactionService;
 import com.example.onlinebanking.validation.AccountValidator;
 import com.example.onlinebanking.validation.CustomerValidator;
 import jakarta.validation.Valid;
@@ -17,11 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
+
 @Controller
 public class AccountController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    BankTransactionService bankTransactionService;
 
     @Autowired
     AccountValidator accountValidator;
@@ -50,6 +58,13 @@ public class AccountController {
             return mav;
         }
 
+        BankTransaction transaction = new BankTransaction();
+        transaction.setBankTransactionAmount(account.getAccountBalance());
+        transaction.setBankTransactionDateTime(LocalDateTime.now());
+        transaction.setBankTransactionType(TransactionType.NEW_ACCOUNT);
+        transaction.setComments("New account is created");
+
+        bankTransactionService.saveTransaction(transaction);
         accountService.saveAccount(account);
         mav.addObject("accounts",accountService.findAll());
         mav.setViewName("redirect:accountForm");

@@ -1,6 +1,7 @@
 <%@page language="java" contentType="text/html; ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="f"%>
+<%@taglib uri="http://www.springframework.org/security/tags" prefix="s"%>
 
 <!DOCTYPE html>
 <html>
@@ -20,7 +21,13 @@
                 <td><a href="roleForm">RoleForm</a></td> <td> | </td>
                 <td><a href="branchForm">BranchForm</a></td> <td> | </td>
                 <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
-                <td><a href="accountForm">AccountForm</a></td>
+                <td><a href="accountForm">AccountForm</a></td> <td> | </td>
+                <td><a href="atm">ATM</a></td>
+
+                <s:authorize access="isAuthenticated()">
+                    <td> | </td>
+                    <td><a href="/logout">Logout</a></td>
+                </s:authorize>
             </tr>
         </table>
     </div>
@@ -75,7 +82,7 @@
         </f:form>
     </div>
 
-    <div align="center">
+    <div class="container-sm" align="center">
         <h2>User Record</h2>
         <table class="table table-dark table-striped">
             <tr>

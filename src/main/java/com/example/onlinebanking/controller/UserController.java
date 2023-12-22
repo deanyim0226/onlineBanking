@@ -7,6 +7,7 @@ import com.example.onlinebanking.service.UserService;
 import com.example.onlinebanking.validation.UserValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -27,6 +28,9 @@ public class UserController {
 
     @Autowired
     UserValidator userValidator;
+
+    @Autowired
+    BCryptPasswordEncoder encoder;
 
     //custom validation
     @InitBinder
@@ -52,7 +56,9 @@ public class UserController {
             mav.addObject("hasError",true);
             return mav;
         }
+
         userService.save(user);
+
         mav.addObject("users",userService.findAll());
         mav.addObject("roles",roleService.findAll());
         mav.setViewName("redirect:userForm");

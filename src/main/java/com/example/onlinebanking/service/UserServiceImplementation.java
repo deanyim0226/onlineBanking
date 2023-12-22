@@ -38,5 +38,10 @@ public class UserServiceImplementation implements UserService{
         return userRepository.findById(userId).orElse(null);
     }
 
+    @Override
+    public User findByUsername(String name) {
+        return userRepository.findByUsername(name);
+    }
+
 
 }

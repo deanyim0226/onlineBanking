@@ -12,4 +12,6 @@ public interface UserService {
     public void deleteById(Long userId);
 
     public User updateById(Long userId);
+
+    public User findByUsername(String name);
 }

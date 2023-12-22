@@ -19,7 +19,12 @@
                 <td><a href="roleForm">RoleForm</a></td> <td> | </td>
                 <td><a href="branchForm">BranchForm</a></td> <td> | </td>
                 <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
-                <td><a href="accountForm">AccountForm</a></td>
+                <td><a href="accountForm">AccountForm</a></td> <td> | </td>
+                <td><a href="atm">ATM</a></td>
+                <s:authorize access="isAuthenticated()">
+                    <td> | </td>
+                    <td><a href="/logout">Logout</a></td>
+                </s:authorize>
             </tr>
         </table>
     </div>

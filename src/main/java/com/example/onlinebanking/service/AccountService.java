@@ -12,6 +12,8 @@ public interface AccountService {
 
     public List<Account> findAll();
 
+    public List<Account> findAccounts(Long customerId);
+
     public void deleteById(Long accountId);
 
     public Account updateAccount(Long accountId);

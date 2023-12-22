@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 public class Account {
-
+//deposit // wirthdrawl //
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;

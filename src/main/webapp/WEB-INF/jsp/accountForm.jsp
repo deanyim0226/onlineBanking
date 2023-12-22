@@ -19,7 +19,12 @@
                 <td><a href="roleForm">RoleForm</a></td> <td> | </td>
                 <td><a href="branchForm">BranchForm</a></td> <td> | </td>
                 <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
-                <td><a href="accountForm">AccountForm</a></td>
+                <td><a href="accountForm">AccountForm</a></td> <td> | </td>
+                <td><a href="atm">ATM</a></td>
+                <s:authorize access="isAuthenticated()">
+                    <td> | </td>
+                    <td><a href="/logout">Logout</a></td>
+                </s:authorize>
             </tr>
         </table>
     </div>
@@ -84,7 +89,7 @@
         </f:form>
     </div>
 
-    <div align="center">
+    <div class="container-sm" align="center">
         <h2>Account Record</h2>
         <table class="table table-dark table-striped">
             <tr>
@@ -99,8 +104,9 @@
             </tr>
 
 
-            <tr>
+
                 <c:forEach items="${accounts}" var="account">
+            <tr>
                     <td>${account.getAccountBranch().getBranchId()}</td>
                     <td>${account.getAccountCustomer().getCustomerId()}</td>
                     <td>${account.getAccountId()}</td>
@@ -110,9 +116,10 @@
                     <td>${account.getAccountBalance()}</td>
                     <td><a href="updateAccount?accountId=${account.getAccountId()}">Update</a> </td>
                     <td><a href="deleteAccount?accountId=${account.getAccountId()}">Delete</a> </td>
+            </tr>
                 </c:forEach>
 
-            </tr>
+
         </table>
     </div>
 </body>

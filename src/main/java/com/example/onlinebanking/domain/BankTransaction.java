@@ -19,9 +19,9 @@ public class BankTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bankTransactionId;
 
-    private Long backTransactionFromAccount;
+    private Long bankTransactionFromAccount;
 
-    private Long backTransactionToAccount;
+    private Long bankTransactionToAccount;
 
     private double bankTransactionAmount;
 

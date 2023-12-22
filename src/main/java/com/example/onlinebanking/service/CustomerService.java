@@ -12,6 +12,9 @@ public interface CustomerService {
 
     public List<Customer> findAll();
 
+    public Customer findByName(String loggedInUser);
+
+
     public void deleteById(Long customerId);
 
     public Customer updateCustomer(Long customerId);

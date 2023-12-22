@@ -20,7 +20,12 @@
             <td><a href="roleForm">RoleForm</a></td> <td> | </td>
             <td><a href="branchForm">BranchForm</a></td> <td> | </td>
             <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
-            <td><a href="accountForm">AccountForm</a></td>
+            <td><a href="accountForm">AccountForm</a></td> <td> | </td>
+            <td><a href="atm">ATM</a></td>
+            <s:authorize access="isAuthenticated()">
+                <td> | </td>
+                <td><a href="/logout">Logout</a></td>
+            </s:authorize>
         </tr>
     </table>
 </div>
@@ -109,7 +114,7 @@
     </f:form>
 </div>
 
-<div align="center">
+<div class="container-sm" align="center">
     <h2>Customer Record</h2>
     <table class="table table-dark table-striped" >
         <tr>
@@ -124,8 +129,9 @@
             <th colspan="2">ACTION</th>
         </tr>
 
-        <tr>
+
             <c:forEach items="${customers}" var="customer">
+        <tr>
                 <td>${customer.getUser().getUserId()}</td>
                 <td>${customer.getCustomerId()}</td>
                 <td>${customer.getCustomerName()}</td>
@@ -142,8 +148,9 @@
                 <td><a href="deleteCustomer?customerId=${customer.getCustomerId()}">Delete</a> </td>
                 <!--List<Account> customerAccounts -->
                 <!--User user-->
-            </c:forEach>
         </tr>
+            </c:forEach>
+
     </table>
 
 </div>
