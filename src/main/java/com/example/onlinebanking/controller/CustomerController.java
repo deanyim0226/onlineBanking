@@ -17,13 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
+
 @Controller
 public class CustomerController {
-
     @Autowired
     CustomerService customerService;
-
-
     @Autowired
     CustomerValidator customerValidator;
 
@@ -32,13 +31,13 @@ public class CustomerController {
         binder.addValidators(customerValidator);
     }
     @RequestMapping("/customerForm")
-    public ModelAndView customerForm(Customer customer){
+    public ModelAndView customerForm(Customer customer, Principal principal){
         ModelAndView mav = new ModelAndView("customerForm");
+
         mav.addObject("customers",customerService.findAll());
         mav.addObject("genders", Gender.values());
 
         return mav;
-
     }
     @RequestMapping("/saveCustomer")
     public ModelAndView saveCustomer(@Valid @ModelAttribute Customer customer, BindingResult br){

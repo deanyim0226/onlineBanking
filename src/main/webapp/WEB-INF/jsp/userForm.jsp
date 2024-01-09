@@ -9,7 +9,12 @@
     <meta charset="ISO-8859-1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <title>User Form</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
 
+        })
+    </script>
 </head>
 <body>
 
@@ -22,7 +27,8 @@
                 <td><a href="branchForm">BranchForm</a></td> <td> | </td>
                 <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
                 <td><a href="accountForm">AccountForm</a></td> <td> | </td>
-                <td><a href="atm">ATM</a></td>
+                <td><a href="atm">ATM</a></td><td> | </td>
+                <td><a href="searchForm">Search</a></td>
 
                 <s:authorize access="isAuthenticated()">
                     <td> | </td>
@@ -42,10 +48,12 @@
                         <td><f:errors path="*"></f:errors></td>
                     </tr>
                 </c:if>
+
                 <tr>
                     <td>ID</td>
                     <td><f:input path="userId"/></td>
                 </tr>
+
                 <tr>
                     <td>NAME</td>
                     <td><f:input path="username"/></td>
@@ -59,7 +67,9 @@
                     <td><f:input path="email"/></td>
                 </tr>
 
+
                 <tr>
+
                     <td>Roles</td>
                     <td>
                         <c:forEach items="${roles}" var="role">
@@ -69,10 +79,10 @@
                             <c:if test="${!retrievedRole.contains(role)}">
                                 <f:checkbox path="roles" label="${role.getName()}" value="${role.getRoleId()}"/>
                             </c:if>
-
                         </c:forEach>
                     </td>
                 </tr>
+
                 <tr>
                     <td colspan="2" align="center"><input class="btn btn-primary" type="submit" value="submit"/> </td>
                 </tr>
@@ -88,6 +98,7 @@
             <tr>
 
                 <th>ID</th>
+
                 <th>NAME</th>
                 <th>PASSWORD</th>
                 <th>EMAIL</th>
@@ -109,7 +120,9 @@
                         </c:forEach>
                     </td>
                     <td><a href="updateUser?userId=${user.getUserId()}">Update</a> </td>
+                    <s:authorize access="hasAuthority('Admin')">
                     <td><a href="deleteUser?userId=${user.getUserId()}">Delete</a> </td>
+                    </s:authorize>
                 </tr>
             </c:forEach>
         </table>

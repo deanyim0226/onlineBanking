@@ -21,7 +21,8 @@
             <td><a href="branchForm">BranchForm</a></td> <td> | </td>
             <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
             <td><a href="accountForm">AccountForm</a></td> <td> | </td>
-            <td><a href="atm">ATM</a></td>
+            <td><a href="atm">ATM</a></td><td> | </td>
+            <td><a href="searchForm">Search</a></td>
             <s:authorize access="isAuthenticated()">
                 <td> | </td>
                 <td><a href="/logout">Logout</a></td>

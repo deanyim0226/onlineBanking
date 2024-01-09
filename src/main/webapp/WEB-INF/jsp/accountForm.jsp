@@ -1,7 +1,7 @@
 <%@page language="java" contentType="text/html; ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="f"%>
-
+<%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +20,8 @@
                 <td><a href="branchForm">BranchForm</a></td> <td> | </td>
                 <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
                 <td><a href="accountForm">AccountForm</a></td> <td> | </td>
-                <td><a href="atm">ATM</a></td>
+                <td><a href="atm">ATM</a></td>  <td> | </td>
+                <td><a href="searchForm">Search</a></td>
                 <s:authorize access="isAuthenticated()">
                     <td> | </td>
                     <td><a href="/logout">Logout</a></td>
@@ -28,6 +29,7 @@
             </tr>
         </table>
     </div>
+    <s:authorize access="hasAuthority('Admin')">
     <div align="center">
         <h1>Account Form</h1>
         <f:form action="saveAccount" method="POST" modelAttribute="account">
@@ -88,34 +90,42 @@
             </table>
         </f:form>
     </div>
-
+    </s:authorize>
     <div class="container-sm" align="center">
         <h2>Account Record</h2>
         <table class="table table-dark table-striped">
             <tr>
+                <s:authorize access="hasAuthority('Admin')">
                 <th>BRANCH ID</th>
                 <th>CUSTOMER ID</th>
+                </s:authorize>
                 <th>ID</th>
                 <th>TYPE</th>
                 <th>DATE OPENED</th>
                 <th>HOLDER</th>
                 <th>BALANCE</th>
+                <s:authorize access="hasAuthority('Admin')">
                 <th colspan="2">Action</th>
+                </s:authorize>
             </tr>
 
 
 
                 <c:forEach items="${accounts}" var="account">
             <tr>
+                <s:authorize access="hasAuthority('Admin')">
                     <td>${account.getAccountBranch().getBranchId()}</td>
                     <td>${account.getAccountCustomer().getCustomerId()}</td>
+                </s:authorize>
                     <td>${account.getAccountId()}</td>
                     <td>${account.getAccountType()}</td>
                     <td>${account.getAccountDateOpened()}</td>
                     <td>${account.getAccountHolder()}</td>
                     <td>${account.getAccountBalance()}</td>
+                    <s:authorize access="hasAuthority('Admin')">
                     <td><a href="updateAccount?accountId=${account.getAccountId()}">Update</a> </td>
                     <td><a href="deleteAccount?accountId=${account.getAccountId()}">Delete</a> </td>
+                    </s:authorize>
             </tr>
                 </c:forEach>
 

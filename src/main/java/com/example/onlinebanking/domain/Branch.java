@@ -1,5 +1,6 @@
 package com.example.onlinebanking.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,6 +31,7 @@ public class Branch {
     private Address address;
 
     @OneToMany(mappedBy = "accountBranch")
+    @JsonBackReference
     private List<Account> branchAccount = new ArrayList<>();;
 
 }

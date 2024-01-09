@@ -17,4 +17,12 @@ public interface AccountService {
     public void deleteById(Long accountId);
 
     public Account updateAccount(Long accountId);
+
+    /*
+        customer
+        AccountForm -> system displays account information associated to the specific user only.
+
+        Admin
+        AccountForm -> able to perform action to update and delete the account
+    */
 }

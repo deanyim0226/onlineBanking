@@ -14,10 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
@@ -39,16 +36,17 @@ public class AccountController {
         binder.addValidators(accountValidator);
     }
 
-
     @RequestMapping("/accountForm")
     public ModelAndView accountForm(Account account){
         ModelAndView mav = new ModelAndView("accountForm");
+
+
         mav.addObject("accounts",accountService.findAll());
         mav.addObject("accountTypes", AccountType.values());
         return mav;
     }
 
-    @RequestMapping("/saveAccount")
+    @RequestMapping(value = "/saveAccount")
     public ModelAndView saveAccount(@Valid @ModelAttribute Account account, BindingResult br){
         ModelAndView mav = new ModelAndView("accountForm");
 

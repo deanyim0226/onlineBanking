@@ -14,4 +14,6 @@ public interface UserService {
     public User updateById(Long userId);
 
     public User findByUsername(String name);
+
+    public Boolean isAdmin(User user);
 }

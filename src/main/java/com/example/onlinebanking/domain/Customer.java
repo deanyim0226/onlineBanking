@@ -1,6 +1,7 @@
 package com.example.onlinebanking.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,7 @@ public class Customer {
     private String customerRealId;
 
     @OneToMany(mappedBy = "accountCustomer")
+    @JsonBackReference
     private List<Account> customerAccounts = new ArrayList<>();
 
     @OneToOne()

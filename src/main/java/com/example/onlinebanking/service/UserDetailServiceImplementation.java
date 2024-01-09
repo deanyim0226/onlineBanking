@@ -39,6 +39,5 @@ public class UserDetailServiceImplementation implements UserDetailsService {
         }
 
         return null;
-
     }
 }

@@ -1,6 +1,7 @@
 package com.example.onlinebanking.service;
 
 import com.example.onlinebanking.domain.BankTransaction;
+import com.example.onlinebanking.domain.Search;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ public interface BankTransactionService {
 
     public void performTransaction(BankTransaction bankTransaction);
 
+    public List<BankTransaction> searchTransaction(List<BankTransaction> bankTransaction, Search searchInfo);
 }

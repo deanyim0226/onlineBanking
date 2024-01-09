@@ -31,10 +31,5 @@ public class BranchValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address.country","branch.country.empty","COUNTRY MUST BE PRESENT");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"address.zipcode","branch.zipcode.empty","ZIPCODE MUST BE PRESENT");
 
-
-
-
-
-
     }
 }

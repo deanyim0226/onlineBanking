@@ -8,9 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -18,6 +16,7 @@ public class RoleController {
 
     @Autowired
     RoleService roleService;
+
 
     @RequestMapping("/roleForm")
     public ModelAndView roleForm(Role role){
@@ -27,9 +26,9 @@ public class RoleController {
         return mav;
     }
 
-    @RequestMapping("/saveRole")
+    @RequestMapping(value = "/saveRole")
     public ModelAndView saveRole(@Valid @ModelAttribute Role role, BindingResult bs){
-
+        System.out.println("saving role is called");
         ModelAndView mav = new ModelAndView("roleForm");
 
         if(bs.hasErrors()){
@@ -45,17 +44,18 @@ public class RoleController {
 
     }
 
-    @RequestMapping("/deleteRole")
+    @RequestMapping(value = "/deleteRole")
     public ModelAndView deleteRole(Role role){
         //Spring will just bind request parameters to class instance
         ModelAndView mav = new ModelAndView("redirect:roleForm");
         //roleService.deleteRole(role.getRoleId());
+        System.out.println("going to delete role id " +role.getRoleId());
         //need to work on either using requrestparam or binding object
 
         return mav;
     }
 
-    @RequestMapping("/updateRole")
+    @RequestMapping(value = "/updateRole")
     public ModelAndView updateRole(@RequestParam Long roleId){
         ModelAndView mav = new ModelAndView("roleForm");
         Role retrievedRole = roleService.updateById(roleId);

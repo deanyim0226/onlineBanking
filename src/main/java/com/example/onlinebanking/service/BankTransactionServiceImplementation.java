@@ -2,14 +2,19 @@ package com.example.onlinebanking.service;
 
 import com.example.onlinebanking.dao.AccountRepository;
 import com.example.onlinebanking.dao.BankTransactionRepository;
-import com.example.onlinebanking.domain.Account;
-import com.example.onlinebanking.domain.BankTransaction;
-import com.example.onlinebanking.domain.TransactionType;
+import com.example.onlinebanking.domain.*;
 import jakarta.persistence.criteria.From;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -61,6 +66,60 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
                 break;
 
         }
+    }
+
+    @Override
+    public List<BankTransaction> searchTransaction(List<BankTransaction> bankTransactions, Search searchInfo) {
+
+        List<BankTransaction> filteredList = new ArrayList<>();
+
+        TransactionType transactionType = searchInfo.getTransactionType();
+        String keyWord = searchInfo.getKeyword();
+        LocalDate dateFrom = searchInfo.getDateFrom();
+        LocalDate dateTo = searchInfo.getDateTo();
+        PeriodicalType periodicalType = searchInfo.getPeriodicalType();
+        System.out.println("searching ");
+        // searchBy type
+        for(BankTransaction transaction : bankTransactions){
+
+            System.out.println(transaction);
+            //search by type and date
+            //          type or date
+            if(transaction.getBankTransactionType().equals(transactionType)){
+
+                if(dateFrom != null && dateTo != null){
+
+                    if(checkTransactionDate(dateFrom,dateTo,transaction)){
+                        filteredList.add(transaction);
+                    }
+
+                }else{
+                    filteredList.add(transaction);
+                }
+
+            }
+        }
+
+        for (BankTransaction test : filteredList){
+            System.out.println("first is " + test);
+        }
+        return filteredList;
+
+    }
+
+    public boolean checkTransactionDate(LocalDate from, LocalDate to, BankTransaction currentTransaction){
+
+        LocalDateTime transactionTimeInfo = currentTransaction.getBankTransactionDateTime();
+        LocalDate transactionDate = transactionTimeInfo.toLocalDate();
+
+        if(transactionDate.isAfter(from)){
+            if(transactionDate.isBefore(to)){
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     public void performTransfer(BankTransaction bankTransaction){

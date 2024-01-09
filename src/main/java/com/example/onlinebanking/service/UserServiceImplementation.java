@@ -1,6 +1,7 @@
 package com.example.onlinebanking.service;
 
 import com.example.onlinebanking.dao.UserRepository;
+import com.example.onlinebanking.domain.Role;
 import com.example.onlinebanking.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,20 @@ public class UserServiceImplementation implements UserService{
     @Override
     public User findByUsername(String name) {
         return userRepository.findByUsername(name);
+    }
+
+    @Override
+    public Boolean isAdmin(User user) {
+
+        List<Role> retrievedRole = user.getRoles();
+
+        for(Role role : retrievedRole){
+
+            if(role.getName().equals("Admin")){
+                return true;
+            }
+        }
+        return false;
     }
 
 

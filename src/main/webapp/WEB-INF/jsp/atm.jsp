@@ -1,7 +1,7 @@
 <%@page language="java" contentType="text/html; ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="f"%>
-
+<%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,7 +42,8 @@
                 <td><a href="branchForm">BranchForm</a></td> <td> | </td>
                 <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
                 <td><a href="accountForm">AccountForm</a></td> <td> | </td>
-                <td><a href="atm">ATM</a></td>
+                <td><a href="atm">ATM</a></td><td> | </td>
+                <td><a href="searchForm">Search</a></td>
                 <s:authorize access="isAuthenticated()">
                     <td> | </td>
                     <td><a href="/logout">Logout</a></td>
@@ -73,9 +74,9 @@
                 <th>TransactionType</th>
                 <td>
                     <f:select id="transactionType" path="bankTransactionType">
-                    <c:forEach items="${transactionTypes}" var="type">
-                        <f:option value="${type}" />
-                    </c:forEach>
+                        <c:forEach items="${transactionTypes}" var="type">
+                            <f:option value="${type}" />
+                        </c:forEach>
                     </f:select>
             </tr>
 
