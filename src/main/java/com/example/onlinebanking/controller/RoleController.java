@@ -2,12 +2,14 @@ package com.example.onlinebanking.controller;
 
 import com.example.onlinebanking.domain.Role;
 import com.example.onlinebanking.service.RoleService;
+import com.example.onlinebanking.validation.RoleValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +19,13 @@ public class RoleController {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    RoleValidator roleValidator;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder){
+        binder.addValidators(roleValidator);
+    }
 
     @RequestMapping("/roleForm")
     public ModelAndView roleForm(Role role){
@@ -33,6 +42,7 @@ public class RoleController {
 
         if(bs.hasErrors()){
             System.out.println("error while saving roles");
+            mav.addObject("hasError",true);
             mav.addObject("roles",roleService.findAll());
             return mav;
         }
@@ -48,7 +58,7 @@ public class RoleController {
     public ModelAndView deleteRole(Role role){
         //Spring will just bind request parameters to class instance
         ModelAndView mav = new ModelAndView("redirect:roleForm");
-        //roleService.deleteRole(role.getRoleId());
+        roleService.deleteRole(role.getRoleId());
         System.out.println("going to delete role id " +role.getRoleId());
         //need to work on either using requrestparam or binding object
 

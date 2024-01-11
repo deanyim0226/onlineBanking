@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,15 +34,26 @@ public class CustomerRestController {
 
         Customer retrievedCustomer = customerService.findById(customer.getCustomerId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
+
         if(retrievedCustomer != null || br.hasErrors()){
 
             if(br.hasErrors()){
-                //error while entering customer info
-                return null;
-            }
+                //error while entering account info from user
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
 
-            //duplicate customer
-            return null;
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedCustomer);
+            }else{
+                //duplicate Customer
+                sb.append("Customer already exist");
+                headers.add("errors",sb.toString());
+                return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(retrievedCustomer);
+            }
         }
 
         Customer newCustomer = customerService.saveCustomer(customer);
@@ -54,16 +66,25 @@ public class CustomerRestController {
 
         Customer retrievedCustomer = customerService.findById(customer.getCustomerId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedCustomer == null || br.hasErrors()){
-            if (br.hasErrors()){
-                //error while entering customer info
-                return null;
+            if(br.hasErrors()){
+                //error while entering account info from user
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedCustomer);
+            }else{
+                //duplicate Customer
+                sb.append("Customer does not exist");
+                headers.add("errors",sb.toString());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedCustomer);
             }
-
-            //customer does not exist
-
-            return null;
         }
 
         retrievedCustomer.setCustomerAddress(customer.getCustomerAddress());
@@ -82,14 +103,20 @@ public class CustomerRestController {
     @DeleteMapping(value = "deleteCustomer/{customerId}")
     public ResponseEntity<?> deleteCustomer(@PathVariable Long customerId){
         Customer retrievedCustomer = customerService.findById(customerId);
+        HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedCustomer == null){
             //customer does not exist
+            sb.append("Customer does not exist");
+            headers.add("errors",sb.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedCustomer);
         }
 
         customerService.deleteById(customerId);
+        headers.add("deleted Customer", retrievedCustomer.getCustomerName());
 
-        return ResponseEntity.status(HttpStatus.OK).body(retrievedCustomer);
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(retrievedCustomer);
     }
 
 }

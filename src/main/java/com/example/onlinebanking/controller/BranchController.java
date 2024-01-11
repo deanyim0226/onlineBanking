@@ -46,6 +46,8 @@ public class BranchController {
         if(br.hasErrors()){
             System.out.println("error while saving branch");
             mav.addObject("hasError",true);
+            mav.addObject("branches", branchService.findAll());
+
             return mav;
         }
 

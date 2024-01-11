@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.print.attribute.standard.Media;
@@ -34,14 +35,28 @@ public class TransactionRestController {
 
         BankTransaction retrievedBankTransaction = bankTransactionService.findById(bankTransaction.getBankTransactionId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedBankTransaction != null || br.hasErrors()){
 
             if(br.hasErrors()){
-                //error while entering transaction info from user
+                System.out.println("error while entering banktransaction info");
+
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedBankTransaction);
             }
 
             //error the transaction exist
+            sb.append("Transaction already exist");
+            headers.add("errors",sb.toString());
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(retrievedBankTransaction);
+
         }
 
         bankTransactionService.performTransaction(bankTransaction);

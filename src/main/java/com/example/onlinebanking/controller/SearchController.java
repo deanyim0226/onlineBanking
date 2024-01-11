@@ -102,6 +102,13 @@ public class SearchController {
 
             if(accounts == null){
                 //user does not have an account, so it should throw an error message
+
+                List<BankTransaction> existingTransactions = new ArrayList<>();
+                List<BankTransaction> filteredTransactions = bankTransactionService.searchTransaction(existingTransactions,search);
+                mav.addObject("filteredTransactions", filteredTransactions);
+
+                return mav;
+
             }
 
             //for customer role

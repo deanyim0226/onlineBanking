@@ -6,10 +6,13 @@ import com.example.onlinebanking.domain.BankTransaction;
 import com.example.onlinebanking.domain.Customer;
 import com.example.onlinebanking.domain.TransactionType;
 import com.example.onlinebanking.service.*;
+import com.example.onlinebanking.validation.TransactionValidator;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,11 +41,43 @@ public class TransactionController {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    TransactionValidator transactionValidator;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder){
+        binder.addValidators(transactionValidator);
+    }
 
     @RequestMapping("/atm")
     public ModelAndView atm(BankTransaction bankTransaction , Principal principal){
         ModelAndView mav = new ModelAndView("atm");
+        setModelAndView(mav,principal);
 
+        return mav;
+    }
+
+    @RequestMapping("/saveTransaction")
+    public ModelAndView saveTransaction(@Valid @ModelAttribute BankTransaction bankTransaction, BindingResult br, Principal principal){
+        ModelAndView mav = new ModelAndView("atm");
+
+        if(br.hasErrors())
+        {
+            System.out.println("ERROR WHILE SAVING ACCOUNT");
+            /*
+            condition check whether account has sufficient fund or not
+            */
+            mav.addObject("hasError",true);
+            setModelAndView(mav,principal);
+            return mav;
+        }
+
+        bankTransactionService.performTransaction(bankTransaction);
+        mav.setViewName("redirect:atm");
+        return mav;
+    }
+
+    public void setModelAndView(ModelAndView mav, Principal principal){
         mav.addObject("transactionTypes", Arrays.stream(TransactionType.values()).filter(transactionType -> transactionType != TransactionType.NEW_ACCOUNT).collect(Collectors.toList()));
         mav.addObject("loggedInUser", principal.getName());
 
@@ -69,32 +104,9 @@ public class TransactionController {
                 existingTransactions.add(bTransaction);
             }
         }
-
         System.out.println("atm home " + existingTransactions);
-
         mav.addObject("transactions", existingTransactions);
 
-        return mav;
-    }
-
-    @RequestMapping("/saveTransaction")
-    public ModelAndView saveTransaction(@Valid @ModelAttribute BankTransaction bankTransaction, BindingResult br, Principal principal){
-        ModelAndView mav = new ModelAndView("atm");
-
-        if(br.hasErrors())
-        {
-            System.out.println("ERROR WHILE SAVING ACCOUNT");
-            /*
-            condition check whether account has sufficient fund or not
-            */
-
-            mav.addObject("hasError",true);
-            return mav;
-        }
-
-        bankTransactionService.performTransaction(bankTransaction);
-        mav.setViewName("redirect:atm");
-        return mav;
     }
 
 

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,11 +32,26 @@ public class AccountRestController {
 
         Account retrievedAccount = accountService.findById(account.getAccountId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedAccount != null || br.hasErrors()){
 
             if(br.hasErrors()){
                 //error while entering account info from user
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedAccount);
+            }else{
+                //user does not exist
+                sb.append("Account already exist");
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(retrievedAccount);
             }
             //duplicate account found
         }
@@ -51,13 +67,25 @@ public class AccountRestController {
 
         Account retrievedAccount = accountService.findById(account.getAccountId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedAccount == null || br.hasErrors()){
             if(br.hasErrors()){
                 //error while entering account info from user
-            }
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
 
-            //user does not exist
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedAccount);
+            }else{
+                //user does not exist
+                sb.append("Account does not exist");
+                headers.add("errors",sb.toString());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedAccount);
+            }
         }
 
         retrievedAccount.setAccountBranch(account.getAccountBranch());
@@ -76,13 +104,19 @@ public class AccountRestController {
     public ResponseEntity<Account> deleteAccount(@PathVariable Long accountId){
 
         Account retrievedAccount = accountService.findById(accountId);
+        HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedAccount == null){
-            // account does not exist
-            return null;
+            //account does not exist
+            sb.append("Account does not exist");
+            headers.add("errors", sb.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedAccount);
         }
+
         accountService.deleteById(accountId);
-        return ResponseEntity.status(HttpStatus.OK).body(retrievedAccount);
+        headers.add("deleted Account", retrievedAccount.getAccountHolder());
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(retrievedAccount);
     }
 
 }

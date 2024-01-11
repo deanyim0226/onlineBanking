@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class AccountController {
@@ -53,12 +54,17 @@ public class AccountController {
         if(br.hasErrors()){
             System.out.println("ERROR WHILE SAVING ACCOUNT");
             mav.addObject("hasError",true);
+            mav.addObject("accounts",accountService.findAll());
+            mav.addObject("accountTypes", AccountType.values());
             return mav;
         }
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formatTime = time.format(format);
 
         BankTransaction transaction = new BankTransaction();
         transaction.setBankTransactionAmount(account.getAccountBalance());
-        transaction.setBankTransactionDateTime(LocalDateTime.now());
+        transaction.setBankTransactionDateTime(LocalDateTime.parse(formatTime,format));
         transaction.setBankTransactionType(TransactionType.NEW_ACCOUNT);
         transaction.setComments("New account is created");
 

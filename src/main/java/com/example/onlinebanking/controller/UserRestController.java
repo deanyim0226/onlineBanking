@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,14 +33,27 @@ public class UserRestController {
 
         User retrievedUser = userService.findById(user.getUserId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedUser != null || br.hasErrors()){
 
             if(br.hasErrors()){
                 System.out.println("error while entering user info");
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(retrievedUser);
+
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedUser);
             }
+
             System.out.println("duplicate user found while saving user");
+            sb.append("User already exist");
+            headers.add("errors",sb.toString());
+
             return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(retrievedUser);
         }
 
@@ -54,9 +68,26 @@ public class UserRestController {
 
         User retrievedUser = userService.findById(user.getUserId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder();
 
-        if(retrievedUser == null){
+        if(retrievedUser == null || br.hasErrors()){
             //user is not found
+            if(br.hasErrors()){
+                System.out.println("error while entering user info");
+
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedUser);
+            }
+
+            System.out.println("duplicate user found while saving user");
+            sb.append("User does not exist");
+            headers.add("errors",sb.toString());
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedUser);
 
@@ -78,12 +109,20 @@ public class UserRestController {
 
         User retrievedUser = userService.findById(userId);
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
+
         if(retrievedUser == null){
             //user is not found
+
+            sb.append("User does not exist");
+            headers.add("errors",sb.toString());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedUser);
+
         }
 
         userService.deleteById(userId);
+        headers.add("deleted User", retrievedUser.getUsername());
+
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(retrievedUser);
     }
 }

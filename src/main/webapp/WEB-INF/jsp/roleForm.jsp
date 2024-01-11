@@ -35,6 +35,12 @@
         <h1>Role Form</h1>
         <f:form action="saveRole" method="POST" modelAttribute="role">
             <table >
+                <c:if test="${hasError}">
+                    <tr>
+                        <td>Errors</td>
+                        <td><f:errors path="*"></f:errors></td>
+                    </tr>
+                </c:if>
                 <tr>
                     <td>ID</td>
                     <td><f:input path="roleId" value="${role.getRoleId()}"/></td>

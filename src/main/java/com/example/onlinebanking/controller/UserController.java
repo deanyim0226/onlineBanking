@@ -50,13 +50,10 @@ public class UserController {
         service based on admin and customer
         admin should be able to see
          */
-
         User retrievedUser = userService.findByUsername(principal.getName());
 
         if(retrievedUser == null){
             //errer
-
-
         }
 
         Boolean isAdmin = userService.isAdmin(retrievedUser);
@@ -85,6 +82,7 @@ public class UserController {
         when the role is not admin, Id and roles should be disabled because
         Id and roles are changeable through admin.
          */
+
         String encryptedPassword = encoder.encode(user.getPassword());
 
         if(br.hasErrors()){

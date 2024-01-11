@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,22 +32,33 @@ public class RoleRestController {
     }
 
     @PostMapping(value = "/saveRole", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Role> saveRole(@Valid @RequestBody Role role, BindingResult bs){
+    public ResponseEntity<Role> saveRole(@Valid @RequestBody Role role, BindingResult br){
         System.out.println("saving the role");
+
+        Role retrievedRole = roleService.findById(role.getRoleId());
         HttpHeaders headers = new HttpHeaders();
         StringBuilder sb = new StringBuilder("");
 
-        Role userRole = roleService.findById(role.getRoleId());
+        if(retrievedRole != null || br.hasErrors()){
 
-        if(userRole != null || bs.hasErrors()){
-
-            if(bs.hasErrors()){
+            if(br.hasErrors()){
                 System.out.println("errors in form either roleId or name");
-                return new ResponseEntity<Role>(userRole, headers, HttpStatus.NOT_ACCEPTABLE);
+
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedRole);
             }
 
             System.out.println("duplicate ID");
-            return new ResponseEntity<Role>(userRole, headers, HttpStatus.CONFLICT);
+            sb.append("Role already exist");
+            headers.add("errors",sb.toString());
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(retrievedRole);
         }
 
         Role savedRole = roleService.save(role);
@@ -56,13 +68,30 @@ public class RoleRestController {
     }
 
     @PutMapping(value = "/updateRole", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateRole(@Valid @RequestBody Role role){
+    public ResponseEntity<?> updateRole(@Valid @RequestBody Role role, BindingResult br){
 
         Role retrievedRole = roleService.findById(role.getRoleId());
+        HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
-        if(retrievedRole == null){
+        if(retrievedRole == null || br.hasErrors()){
 
-            return new ResponseEntity<String>("No role with id " + role.getRoleId(), HttpStatus.NOT_FOUND);
+            if(br.hasErrors()){
+                System.out.println("errors in form either roleId or name");
+
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
+
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedRole);
+            }
+
+            sb.append("Role does not exist");
+            headers.add("errors",sb.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedRole);
         }
 
         retrievedRole.setName(role.getName());
@@ -75,18 +104,21 @@ public class RoleRestController {
     @DeleteMapping(value = "/delete/{roleId}")
     public ResponseEntity<?> deleteRole(@PathVariable Long roleId){
 
+
+        Role retrievedRole = roleService.findById(roleId);
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
-        Role role = roleService.findById(roleId);
-
-        if(role == null){
-            return new ResponseEntity<Role>(role,HttpStatus.NOT_FOUND);
+        if(retrievedRole == null){
+            sb.append("Role does not exist");
+            headers.add("errors",sb.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedRole);
         }
 
         roleService.deleteRole(roleId);
         headers.add("Deleted Role", roleId.toString());
 
-        return new ResponseEntity<Role>(role,headers,HttpStatus.OK);
+        return new ResponseEntity<Role>(retrievedRole,headers,HttpStatus.OK);
 
     }
 

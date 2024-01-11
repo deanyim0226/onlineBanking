@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,16 +34,26 @@ public class BranchRestController {
 
         Branch retrievedBranch = branchService.findById(branch.getBranchId());
         HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedBranch != null || br.hasErrors()){
 
             if(br.hasErrors()){
-                //error while entering the branch info from user
-                return null;
-            }
+                //error while entering account info from user
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
 
-            //duplicate branch is found
-            return null;
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedBranch);
+            }else{
+                //user does not exist
+                sb.append("Branch already exist");
+                headers.add("errors",sb.toString());
+                return ResponseEntity.status(HttpStatus.CONFLICT).headers(headers).body(retrievedBranch);
+            }
         }
 
         Branch newBranch = branchService.saveBranch(branch);
@@ -55,17 +66,26 @@ public class BranchRestController {
 
         Branch retrievedBranch = branchService.findById(branch.getBranchId());
         HttpHeaders headers = new HttpHeaders();
-
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedBranch == null || br.hasErrors()){
 
             if(br.hasErrors()){
-                //error while entering the branch info from user
-                return null;
-            }
+                //error while entering account info from user
+                List<FieldError> fieldErrors = br.getFieldErrors();
+                for(FieldError fieldError: fieldErrors){
+                    sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+                }
+                System.out.println("sb: " + sb );
+                headers.add("errors",sb.toString());
 
-            //user does not exist
-            return null;
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).headers(headers).body(retrievedBranch);
+            }else{
+                //user does not exist
+                sb.append("Branch does not exist");
+                headers.add("errors",sb.toString());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedBranch);
+            }
         }
 
         retrievedBranch.setBranchName(branch.getBranchName());
@@ -81,12 +101,19 @@ public class BranchRestController {
     public ResponseEntity<Branch> deleteBranch(@PathVariable Long branchId){
 
         Branch retrievedBranch = branchService.findById(branchId);
+        HttpHeaders headers = new HttpHeaders();
+        StringBuilder sb = new StringBuilder("");
 
         if(retrievedBranch == null){
             //branch does not exist
+            sb.append("Branch does not exist");
+            headers.add("errors", sb.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(retrievedBranch);
         }
 
         branchService.deleteById(branchId);
+        headers.add("deleted branch", retrievedBranch.getBranchName());
+
         return ResponseEntity.status(HttpStatus.OK).body(retrievedBranch);
     }
 

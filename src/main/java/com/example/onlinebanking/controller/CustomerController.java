@@ -46,6 +46,8 @@ public class CustomerController {
         if(br.hasErrors()){
             System.out.println("ERROR WHILE SAVING CUSTOMER");
             mav.addObject("hasError",true);
+            mav.addObject("customers",customerService.findAll());
+            mav.addObject("genders", Gender.values());
             return mav;
         }
         customerService.saveCustomer(customer);

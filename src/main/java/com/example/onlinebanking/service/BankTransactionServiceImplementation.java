@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.From;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -48,25 +49,28 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
 
         TransactionType transactionType = bankTransaction.getBankTransactionType();
 
-        switch (transactionType){
+        if(bankTransaction.getBankTransactionAmount() > 0){
+            switch (transactionType){
 
-            case DEPOSIT:
-                System.out.println("DEPOSIT");
-                performDeposit(bankTransaction);
-                break;
-            case WITHDRAWAL:
-                System.out.println("WITHDRAWAL");
-                performWithdrawal(bankTransaction);
-                break;
-            case TRANSFER:
-                System.out.println("TRANSFER");
-                performTransfer(bankTransaction);
-                break;
-            default:
-                break;
-
+                case DEPOSIT:
+                    System.out.println("DEPOSIT");
+                    performDeposit(bankTransaction);
+                    break;
+                case WITHDRAWAL:
+                    System.out.println("WITHDRAWAL");
+                    performWithdrawal(bankTransaction);
+                    break;
+                case TRANSFER:
+                    System.out.println("TRANSFER");
+                    performTransfer(bankTransaction);
+                    break;
+                default:
+                    break;
+            }
         }
+
     }
+
 
     @Override
     public List<BankTransaction> searchTransaction(List<BankTransaction> bankTransactions, Search searchInfo) {
@@ -97,6 +101,14 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
                     filteredList.add(transaction);
                 }
 
+            }else{
+
+                if(dateFrom != null && dateTo != null){
+
+                    if(checkTransactionDate(dateFrom,dateTo,transaction)){
+                        filteredList.add(transaction);
+                    }
+                }
             }
         }
 
@@ -157,7 +169,11 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
             accountRepository.save(accountTo);
         }
 
-        bankTransaction.setBankTransactionDateTime(LocalDateTime.now());
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formatTime = time.format(format);
+
+        bankTransaction.setBankTransactionDateTime(LocalDateTime.parse(formatTime,format));
         bankTransactionRepository.save(bankTransaction);
     }
 
@@ -185,16 +201,18 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
             }
         }
 
-        bankTransaction.setBankTransactionDateTime(LocalDateTime.now());
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formatTime = time.format(format);
+
+        bankTransaction.setBankTransactionDateTime(LocalDateTime.parse(formatTime,format));
         bankTransactionRepository.save(bankTransaction);
     }
     public void performDeposit(BankTransaction bankTransaction){
 
-
         Long accountNumberToDeposit = bankTransaction.getBankTransactionToAccount();
         double amountToDeposit = bankTransaction.getBankTransactionAmount();
         //if amountToDeposit is negative, it should throw an error.
-
         //need to update money in respect to the deposit amount.
         List<Account> listAccounts = accountRepository.findAll();
 
@@ -202,16 +220,22 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
             if(account.getAccountId() == accountNumberToDeposit){
                 //update account based on deposit money
                 double currentBalance = account.getAccountBalance();
+                if(amountToDeposit < 0){
+                    //throw error saying cannot deposit negative amount
+                    break;
+                }
                 currentBalance += amountToDeposit;
                 account.setAccountBalance(currentBalance);
                 accountRepository.save(account);
                 break;
             }
         }
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formatTime = time.format(format);
 
-        bankTransaction.setBankTransactionDateTime(LocalDateTime.now());
+        bankTransaction.setBankTransactionDateTime(LocalDateTime.parse(formatTime,format));
         bankTransactionRepository.save(bankTransaction);
     }
-
 
 }
