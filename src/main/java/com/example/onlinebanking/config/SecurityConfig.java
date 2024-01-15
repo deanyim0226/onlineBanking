@@ -24,7 +24,11 @@ public class SecurityConfig {
 
     @Autowired
     UserDetailsService userDetailsService;
+    @Autowired
+    AuthenticationSuccessHandler successHandler;
 
+    @Autowired
+    AccessDeniedHandler accessDeniedHandler;
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
@@ -32,13 +36,18 @@ public class SecurityConfig {
         http.httpBasic().and().csrf().disable().authorizeHttpRequests()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/login")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/register")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/WEB-INF/jsp/**")).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .successHandler(successHandler)
                 .and()
-                .exceptionHandling();
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler);
 
 
         http.userDetailsService(userDetailsService);

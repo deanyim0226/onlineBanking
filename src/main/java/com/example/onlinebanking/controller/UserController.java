@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,9 +34,6 @@ public class UserController {
 
     @Autowired
     UserValidator userValidator;
-
-    @Autowired
-    BCryptPasswordEncoder encoder;
 
     //custom validation
     @InitBinder
@@ -75,7 +73,7 @@ public class UserController {
     public ModelAndView saveUser(@Valid @ModelAttribute User user, BindingResult br, Principal principal){
         ModelAndView mav = new ModelAndView("userForm");
         User retrievedUser = userService.findByUsername(principal.getName());
-
+        StringBuilder sb = new StringBuilder("");
         Boolean isAdmin = userService.isAdmin(retrievedUser);
 
         /*
@@ -83,16 +81,27 @@ public class UserController {
         Id and roles are changeable through admin.
          */
 
-        String encryptedPassword = encoder.encode(user.getPassword());
+        System.out.println(user.getUserId());
+        System.out.println(user.getRoles());
+        System.out.println(user.getEmail());
 
         if(br.hasErrors()){
+
+            List<FieldError> fieldErrors = br.getFieldErrors();
+            for(FieldError fieldError: fieldErrors){
+                sb = sb.append("\""+fieldError.getField() +"\":"+fieldError.getDefaultMessage()+"\n");
+            }
+            System.out.println("sb: " + sb );
+
             System.out.println("error while saving users");
+            //error could lead to two cases
+            // one for admin  another for customer
+            // it should display differently
             mav.addObject("users",userService.findAll());
             mav.addObject("hasError",true);
             return mav;
         }
 
-        user.setPassword(encryptedPassword);
         userService.save(user);
 
         mav.addObject("users",userService.findAll());
@@ -130,4 +139,7 @@ public class UserController {
 
         return mav;
     }
+
+
+
 }

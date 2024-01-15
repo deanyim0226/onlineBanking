@@ -21,6 +21,12 @@ public class CustomerRestController {
     @Autowired
     CustomerService customerService;
 
+    @RequestMapping(value = "/getCustomer/{customerId}", method = RequestMethod.GET)
+    public Customer getCustomer(@PathVariable Long customerId){
+
+        return customerService.findById(customerId);
+    }
+
     @GetMapping(value = "/getCustomers")
     public ResponseEntity<List<Customer>> getCustomers(){
 

@@ -22,6 +22,5 @@ public class Search {
     private String keyword;
     private LocalDate dateFrom;
     private LocalDate dateTo;
-    private PeriodicalType periodicalType;
     private TransactionType transactionType;
 }

@@ -35,6 +35,12 @@ public class BranchController {
         ModelAndView mav = new ModelAndView("branchForm");
         mav.addObject("branches", branchService.findAll());
 
+        /*
+            Things to do
+            make branch form using modal
+
+            * search functionality to search branch
+         */
         return mav;
     }
 

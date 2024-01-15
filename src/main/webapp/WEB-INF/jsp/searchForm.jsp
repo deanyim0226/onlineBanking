@@ -7,93 +7,85 @@
     <head>
 
         <meta charset="ISO-8859-1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
         <title>User Form</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <style>
+            body{
+                background-image: url("https://www.cpomagazine.com/wp-content/uploads/2023/02/what-u-s-companies-can-learn-from-the-european-payment-scene_1500.jpg");
+
+            }
+            h2{
+                color: honeydew;
+                margin-top: 2em;
+                margin-bottom: 1em;
+            }
+
+        </style>
         <script>
             $(document).ready(function(){
 
+                $("#search").click(function(){
+
+                    $("#myModal").toggle()
+                })
+
+                $(".close").click(function(){
+                    $("#myModal").hide()
+                })
+
+                $("#close").click(function(){
+                    $("#myModal").hide()
+                })
             })
         </script>
     </head>
     <body>
 
-    <div align="center">
-        <table>
-            <tr>
-                <td><a href="home">Home</a></td> <td> | </td>
-                <td><a href="userForm">UserForm</a></td> <td> | </td>
-                <td><a href="roleForm">RoleForm</a></td> <td> | </td>
-                <td><a href="branchForm">BranchForm</a></td> <td> | </td>
-                <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
-                <td><a href="accountForm">AccountForm</a></td> <td> | </td>
-                <td><a href="atm">ATM</a></td><td> | </td>
-                <td><a href="searchForm">Search</a></td>
+    <header>
 
-                <s:authorize access="isAuthenticated()">
-                    <td> | </td>
-                    <td><a href="/logout">Logout</a></td>
+        <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+
+            <a class="btn btn-dark dropdown"   href="home"  >HOME</a>
+
+            <ul class="nav justify-content-end">
+
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="userForm" >USER</a></li>
+                <s:authorize access="hasAuthority('Admin')">
+                    <li class = "nav-item"><a class="btn btn-dark dropdown"  href="roleForm" >ROLE</a></li>
+                    <li class = "nav-item"><a class="btn btn-dark dropdown"  href="branchForm">BRANCH</a></li>
                 </s:authorize>
-            </tr>
-        </table>
-    </div>
-    <div align="center">
-        <h1>Search</h1>
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="customerForm">CUSTOMER</a></li>
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="accountForm">ACCOUNT</a></li>
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="atm">TRANSACTION</a></li>
+                <li class = "nav-item"><a class="btn btn-dark dropdown"   href="searchForm">SEARCH </a></li>
+                <s:authorize access="isAuthenticated()">
+                    <li class = "nav-item"><a class="btn btn-dark dropdown"  href="/logout">LOGOUT</a></li>
+                </s:authorize>
+            </ul>
 
-        <f:form action="searchTransaction" method="POST" modelAttribute="search">
-            <table>
-                <tr>
-                    <td>Search by transaction type</td>
-                    <td>
-                        <f:select path="transactionType">
-                        <c:forEach items="${transactionTypes}" var="t">
-                            <f:option value="${t}"></f:option>
-                        </c:forEach>
-                        </f:select>
-                    </td>
-                </tr>
+        </nav>
 
-                <tr>
-                    <td>Search by keyword</td>
-                    <td><f:input type="text" path="keyword"></f:input></td>
-                </tr>
-                <tr>
-                    <td>Search by date</td>
-                    <td>
-                        <f:select path="periodicalType">
-                            <c:forEach items="${periodicalTypes}" var="p">
-                                <f:option value="${p}"></f:option>
-                            </c:forEach>
-                        </f:select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Search by range from</td>
-                    <td><f:input type="date"  path="dateFrom"></f:input></td>
-                </tr>
-                <tr>
-                    <td>Search by range to</td>
-                    <td><f:input type="date" path="dateTo"></f:input></td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center"><input class="btn btn-primary" type="submit" value="search"/> </td>
-                </tr>
-            </table>
-        </f:form>
-    </div>
+    </header>
+
+
 
     <div class="container-sm" align="center">
         <h2>Search Result</h2>
         <table class="table table-dark table-striped">
 
             <tr>
-                <th>ID</th>
+                <th>TRANSACTION-ID</th>
                 <th>TYPE</th>
                 <th>AMOUNT</th>
                 <th>FROM</th>
                 <th>TO</th>
                 <th>COMMENTS</th>
                 <th>DATE/TIME</th>
+                <th> <button class="btn btn-success" id="search">SEARCH</button></th>
+
             </tr>
 
             <c:forEach items="${filteredTransactions}" var="transaction">
@@ -105,10 +97,58 @@
                     <td>${transaction.getBankTransactionToAccount()}</td>
                     <td>${transaction.getComments()}</td>
                     <td>${transaction.getBankTransactionDateTime()}</td>
+                    <td></td>
                 </tr>
             </c:forEach>
 
         </table>
+    </div>
+
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header" >
+                    <h4 class="modal-title">SEARCH TRANSACTION</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <f:form action="searchTransaction" method="POST" modelAttribute="search">
+                        <div class="col">
+                            <c:if test="${hasError}">
+                                <tr>
+                                    <td>Errors</td>
+                                    <td><f:errors path="*"></f:errors></td>
+                                </tr>
+                            </c:if>
+
+                            TRANSACTION TYPE
+                            <f:select path="transactionType" class="form-control">
+                                <c:forEach items="${transactionTypes}" var="t">
+                                    <f:option value="${t}"></f:option>
+                                </c:forEach>
+                            </f:select>
+
+                            DATE FROM
+                            <f:input type="date"   class="form-control" path="dateFrom"/>
+
+                            DATE TO
+                            <f:input type="date" class="form-control" path="dateTo"/>
+
+                            KEYWORD
+                            <f:input type="text" class="form-control" path="keyword"/>
+
+                            <input style="margin-top:25px" class="btn form-control btn-primary" type="submit" id="" value="submit"/>
+                        </div>
+                    </f:form>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="close" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
     </body>
 </html>

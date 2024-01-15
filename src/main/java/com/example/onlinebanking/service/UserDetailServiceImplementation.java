@@ -20,9 +20,6 @@ public class UserDetailServiceImplementation implements UserDetailsService {
     @Autowired
     UserService userService;
 
-    @Autowired
-    BCryptPasswordEncoder encoder;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("username: " + username);
@@ -35,7 +32,7 @@ public class UserDetailServiceImplementation implements UserDetailsService {
             for(Role role: user.getRoles()){
                 authorities.add(new SimpleGrantedAuthority(role.getName()));
             }
-            return new org.springframework.security.core.userdetails.User(user.getUsername(),encoder.encode(user.getPassword()),authorities);
+            return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),authorities);
         }
 
         return null;

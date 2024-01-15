@@ -6,6 +6,7 @@ import com.example.onlinebanking.domain.*;
 import jakarta.persistence.criteria.From;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
@@ -28,6 +29,11 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
     @Autowired
     AccountRepository accountRepository;
 
+    JdbcTemplate jdbcTemplate;
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public BankTransaction saveTransaction(BankTransaction bankTransaction) {
@@ -81,7 +87,6 @@ public class BankTransactionServiceImplementation implements BankTransactionServ
         String keyWord = searchInfo.getKeyword();
         LocalDate dateFrom = searchInfo.getDateFrom();
         LocalDate dateTo = searchInfo.getDateTo();
-        PeriodicalType periodicalType = searchInfo.getPeriodicalType();
         System.out.println("searching ");
         // searchBy type
         for(BankTransaction transaction : bankTransactions){

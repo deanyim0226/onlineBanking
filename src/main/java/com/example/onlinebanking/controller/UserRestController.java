@@ -22,6 +22,12 @@ public class UserRestController {
     @Autowired
     UserService userService;
 
+
+    @RequestMapping(value = "/getUser/{userId}", method = RequestMethod.GET)
+    public User getUser(@PathVariable Long userId){
+        return userService.findById(userId);
+    }
+
     @GetMapping(value = "/getUsers", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<User>> getUsers(){
         List<User> userList = userService.findAll();

@@ -2,6 +2,7 @@ package com.example.onlinebanking.service;
 
 import com.example.onlinebanking.dao.CustomerRepository;
 import com.example.onlinebanking.domain.Customer;
+import com.example.onlinebanking.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,13 @@ public class CustomerServiceImplementation implements CustomerService{
 
     @Autowired
     CustomerRepository customerRepository;
+
+    public List<User> findAvailableUsers(List<User> userList){
+
+        List<Customer> customerList = customerRepository.findAll();
+        List<User> availableUsers = new ArrayList<>();
+        return null;
+    }
 
     @Override
     public Customer saveCustomer(Customer branch) {

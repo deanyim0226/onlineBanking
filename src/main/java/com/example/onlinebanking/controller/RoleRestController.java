@@ -23,6 +23,11 @@ public class RoleRestController {
     @Autowired
     RoleService roleService;
 
+    @RequestMapping(value = "/getRole/{roleId}", method = RequestMethod.GET)
+    public Role getRole(@PathVariable Long roleId){
+
+        return roleService.findById(roleId);
+    }
     @GetMapping(value = "/getRoles" , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> restfulGet(){
 

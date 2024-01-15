@@ -41,6 +41,7 @@ public class SearchController {
     BankTransactionService bankTransactionService;
 
 
+
     @RequestMapping("/searchForm")
     private ModelAndView searchForm(Search search, Principal principal){
 
@@ -55,7 +56,6 @@ public class SearchController {
         }
 
         mav.addObject("transactionTypes", Arrays.stream(TransactionType.values()).filter(type -> type != type.NEW_ACCOUNT).collect(Collectors.toList()));
-        mav.addObject("periodicalTypes",PeriodicalType.values());
 
         return mav;
     }
@@ -66,7 +66,6 @@ public class SearchController {
         ModelAndView mav = new ModelAndView("searchForm");
 
         mav.addObject("transactionTypes", Arrays.stream(TransactionType.values()).filter(type -> type != type.NEW_ACCOUNT).collect(Collectors.toList()));
-        mav.addObject("periodicalTypes",PeriodicalType.values());
 
 
         String userName = principal.getName();
@@ -80,22 +79,11 @@ public class SearchController {
         List<BankTransaction> bankTransactions = bankTransactionService.findAll();
 
         if(isAdmin == true){
-            /*
-            able to see all the transactions
-             */
+
             List<BankTransaction> filteredTransactions = bankTransactionService.searchTransaction(bankTransactions,search);
             mav.addObject("filteredTransactions", filteredTransactions);
 
         }else{
-
-            /*
-            able to see user's transaction
-            search by transaction type
-            search by specific date
-            dayly
-            weekly
-            monthly
-             */
 
             //handle a case where customer is null
             List<Account> accounts = accountService.findAccounts(customer.getCustomerId());

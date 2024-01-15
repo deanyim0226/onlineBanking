@@ -4,6 +4,7 @@ import com.example.onlinebanking.dao.UserRepository;
 import com.example.onlinebanking.domain.Role;
 import com.example.onlinebanking.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,14 @@ public class UserServiceImplementation implements UserService{
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    BCryptPasswordEncoder encoder;
+
+
     @Override
     public User save(User user) {
+        String encryptedPassword = encoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
         return userRepository.save(user);
     }
 

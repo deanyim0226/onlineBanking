@@ -6,67 +6,136 @@
 <html>
 <head>
     <meta charset="ISO-8859-1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <title>Role Form</title>
+    <style>
+        body{
+            background-image: url("https://www.cpomagazine.com/wp-content/uploads/2023/02/what-u-s-companies-can-learn-from-the-european-payment-scene_1500.jpg");
 
+        }
+        h2{
+            color: honeydew;
+            margin-top: 2em;
+            margin-bottom: 1em;
+        }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            $(".update-admin").each(function(index,element){
+
+                $(element).click(function(){
+
+                    $("#modal_roleId").attr("readonly",true)
+
+                    let roleId = $(element).attr("data-role-id")
+
+                    $.ajax({
+                        type:"GET",
+                        url:"http://localhost:9100/r/getRole/" + roleId,
+                        success: function(response){
+                            $("#modal_roleId").val(response.roleId)
+                            $("#modal_roleName").val(response.name)
+                        },
+                        error: function (err){
+                            alert("something is wrong while getting role " + err)
+                        }
+                    })
+
+                    $("#myModal").toggle()
+                    return false;
+
+                })
+            })
+
+            $("#addRole").click(function(){
+
+                $("#myModal").toggle()
+                $("#modal_roleId").attr("readonly",false)
+                $("#modal_roleId").val("")
+                $("#modal_roleName").val("")
+
+            })
+
+            $(".close").click(function(){
+                $("#myModal").hide()
+            })
+            $("#close").click(function(){
+                $("#myModal").hide()
+            })
+        })
+    </script>
 </head>
 <body>
-    <div align="center">
-        <table>
-            <tr>
-                <td><a href="home">Home</a></td> <td> | </td>
-                <td><a href="userForm">UserForm</a></td> <td> | </td>
-                <td><a href="roleForm">RoleForm</a></td> <td> | </td>
-                <td><a href="branchForm">BranchForm</a></td> <td> | </td>
-                <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
-                <td><a href="accountForm">AccountForm</a></td> <td> | </td>
-                <td><a href="atm">ATM</a></td><td> | </td>
-                <td><a href="searchForm">Search</a></td>
-                <s:authorize access="isAuthenticated()">
-                    <td> | </td>
-                    <td><a href="/logout">Logout</a></td>
-                </s:authorize>
-            </tr>
-        </table>
-    </div>
-    <div align="center">
+<header>
 
-        <s:authorize access="hasAuthority('Admin')">
-        <h1>Role Form</h1>
-        <f:form action="saveRole" method="POST" modelAttribute="role">
-            <table >
-                <c:if test="${hasError}">
-                    <tr>
-                        <td>Errors</td>
-                        <td><f:errors path="*"></f:errors></td>
-                    </tr>
-                </c:if>
-                <tr>
-                    <td>ID</td>
-                    <td><f:input path="roleId" value="${role.getRoleId()}"/></td>
-                </tr>
-                <tr>
-                    <td>NAME</td>
-                    <td><f:input path="name" value="${role.getName()}"/></td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center"><input class="btn btn-primary" type="submit" value="submit"/> </td>
-                </tr>
-            </table>
-        </f:form>
-        </s:authorize>
+    <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+
+        <a class="btn btn-dark dropdown"   href="home"  >HOME</a>
+
+        <ul class="nav justify-content-end">
+
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="userForm" >USER</a></li>
+            <s:authorize access="hasAuthority('Admin')">
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="roleForm" >ROLE</a></li>
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="branchForm">BRANCH</a></li>
+            </s:authorize>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="customerForm">CUSTOMER</a></li>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="accountForm">ACCOUNT</a></li>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="atm">TRANSACTION</a></li>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"   href="searchForm">SEARCH </a></li>
+            <s:authorize access="isAuthenticated()">
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="/logout">LOGOUT</a></li>
+            </s:authorize>
+        </ul>
+
+    </nav>
+
+</header>
+
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header" >
+                    <h4 class="modal-title">ROLE INFO</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <f:form action="saveRole" method="POST" modelAttribute="role">
+                        <div class="col">
+                            ROLE ID <f:input path="roleId" readonly="true" class="form-control" type="text" id="modal_roleId"/>
+                            ROLE <f:input path="name" class="form-control" type="text" id="modal_roleName"/>
+                            <input style="margin-top:25px" class="btn form-control btn-primary" type="submit" id="" value="submit"/>
+                        </div>
+                    </f:form>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="close" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
+
+
 
     <div class="container-sm" align="center" >
         <h2>Role Record</h2>
+
         <table class="table table-dark table-striped">
             <tr>
                 <s:authorize access="hasAuthority('Admin')">
-                <th>ID</th>
+                <th>ROLE-ID</th>
                 </s:authorize>
                 <th>NAME</th>
                 <s:authorize access="hasAuthority('Admin')">
                 <th colspan="2">Action</th>
+                <th> <button class="btn btn-success" id="addRole">ADD</button></th>
                 </s:authorize>
             </tr>
             <c:forEach items="${roles}" var="role">
@@ -77,7 +146,7 @@
 
                     <td>${role.getName()}</td>
                     <s:authorize access="hasAuthority('Admin')">
-                    <td><a href="updateRole?roleId=${role.getRoleId()}">Update</a> </td>
+                    <td><a data-role-id="${role.getRoleId()}" class="update-admin" href="updateRole?roleId=${role.getRoleId()}">Update</a> </td>
                     <td><a href="deleteRole?roleId=${role.getRoleId()}">Delete</a> </td>
                     </s:authorize>
                 </tr>

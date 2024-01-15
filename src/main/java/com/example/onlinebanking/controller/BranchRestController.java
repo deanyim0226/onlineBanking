@@ -22,6 +22,13 @@ public class BranchRestController {
     @Autowired
     BranchService branchService;
 
+    @RequestMapping(value = "/getBranch/{branchId}", method = RequestMethod.GET)
+    public Branch getBranch(@PathVariable Long branchId){
+
+        return branchService.findById(branchId);
+    }
+
+
     @GetMapping(value = "/getBranches", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Branch>> getBranches(){
 

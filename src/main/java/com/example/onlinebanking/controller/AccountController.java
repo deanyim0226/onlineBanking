@@ -1,11 +1,10 @@
 package com.example.onlinebanking.controller;
 
-import com.example.onlinebanking.domain.Account;
-import com.example.onlinebanking.domain.AccountType;
-import com.example.onlinebanking.domain.BankTransaction;
-import com.example.onlinebanking.domain.TransactionType;
+import com.example.onlinebanking.domain.*;
 import com.example.onlinebanking.service.AccountService;
 import com.example.onlinebanking.service.BankTransactionService;
+import com.example.onlinebanking.service.CustomerService;
+import com.example.onlinebanking.service.UserService;
 import com.example.onlinebanking.validation.AccountValidator;
 import com.example.onlinebanking.validation.CustomerValidator;
 import jakarta.validation.Valid;
@@ -17,8 +16,10 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Controller
 public class AccountController {
@@ -32,18 +33,55 @@ public class AccountController {
     @Autowired
     AccountValidator accountValidator;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    CustomerService customerService;
+
+
     @InitBinder
     public void initBinder(WebDataBinder binder){
         binder.addValidators(accountValidator);
     }
 
     @RequestMapping("/accountForm")
-    public ModelAndView accountForm(Account account){
+    public ModelAndView accountForm(Account account, Principal principal){
         ModelAndView mav = new ModelAndView("accountForm");
 
+        User retrievedUser = userService.findByUsername(principal.getName());
 
-        mav.addObject("accounts",accountService.findAll());
-        mav.addObject("accountTypes", AccountType.values());
+        if(retrievedUser == null){
+            System.out.println("User does not exist");
+        }
+
+        Boolean isAdmin = userService.isAdmin(retrievedUser);
+
+        if(isAdmin){
+            mav.addObject("accounts",accountService.findAll());
+            mav.addObject("accountTypes", AccountType.values());
+        }else{
+
+            //display only current users account info
+            Customer currentCustomer = customerService.findByName(retrievedUser.getUsername());
+            List<Account> customerAccounts = accountService.findAccounts(currentCustomer.getCustomerId());
+            mav.addObject("accounts",customerAccounts);
+            mav.addObject("accountTypes", AccountType.values());
+
+            /*
+            Things to do
+            retrieve branch Id so that there won't be error while typing id
+
+            For account record
+            instead of showing branch id, show branch name
+            instead of showing customer id, show customer name
+
+            for admin
+            able to search specific account with account Id
+
+             */
+        }
+
         return mav;
     }
 
@@ -69,6 +107,8 @@ public class AccountController {
         transaction.setComments("New account is created");
 
         bankTransactionService.saveTransaction(transaction);
+        //set account opened date
+
         accountService.saveAccount(account);
         mav.addObject("accounts",accountService.findAll());
         mav.setViewName("redirect:accountForm");

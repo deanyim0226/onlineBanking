@@ -6,11 +6,39 @@
 <html>
 <head>
     <meta charset="ISO-8859-1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <title>ATM</title>
+    <style>
+        body{
+            background-image: url("https://www.cpomagazine.com/wp-content/uploads/2023/02/what-u-s-companies-can-learn-from-the-european-payment-scene_1500.jpg");
+        }
+        h2{
+            color: honeydew;
+            margin-top: 2em;
+            margin-bottom: 1em;
+        }
+
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
+
+            $("#makeTransfer").click(function(){
+
+                $("#myModal").toggle()
+            })
+
+            $(".close").click(function(){
+
+                $("#myModal").hide()
+            })
+
+            $("#close").click(function(){
+
+                $("#myModal").hide()
+            })
+
             $("#accountFrom").prop('disabled',true)
 
             $("#transactionType").on("change",function (){
@@ -24,8 +52,14 @@
                     $("#accountFrom").prop('disabled',false)
 
                 }else{
+                    let accountTo = $("#accountTo").val()
+                    let accountFrom = $("#accountFrom").val()
+
                     $("#accountTo").prop('disabled',false)
                     $("#accountFrom").prop('disabled',false)
+
+
+
                 }
             })
 
@@ -33,102 +67,101 @@
     </script>
 </head>
 <body>
-    <div align="center">
-        <table>
-            <tr>
-                <td><a href="home">Home</a></td> <td> | </td>
-                <td><a href="userForm">UserForm</a></td> <td> | </td>
-                <td><a href="roleForm">RoleForm</a></td> <td> | </td>
-                <td><a href="branchForm">BranchForm</a></td> <td> | </td>
-                <td><a href="customerForm">CustomerForm</a></td> <td> | </td>
-                <td><a href="accountForm">AccountForm</a></td> <td> | </td>
-                <td><a href="atm">ATM</a></td><td> | </td>
-                <td><a href="searchForm">Search</a></td>
-                <s:authorize access="isAuthenticated()">
-                    <td> | </td>
-                    <td><a href="/logout">Logout</a></td>
-                </s:authorize>
-            </tr>
-        </table>
+<header>
+
+    <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+
+        <a class="btn btn-dark dropdown"   href="home"  >HOME</a>
+
+        <ul class="nav justify-content-end">
+
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="userForm" >USER</a></li>
+            <s:authorize access="hasAuthority('Admin')">
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="roleForm" >ROLE</a></li>
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="branchForm">BRANCH</a></li>
+            </s:authorize>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="customerForm">CUSTOMER</a></li>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="accountForm">ACCOUNT</a></li>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"  href="atm">TRANSACTION</a></li>
+            <li class = "nav-item"><a class="btn btn-dark dropdown"   href="searchForm">SEARCH </a></li>
+            <s:authorize access="isAuthenticated()">
+                <li class = "nav-item"><a class="btn btn-dark dropdown"  href="/logout">LOGOUT</a></li>
+            </s:authorize>
+        </ul>
+
+    </nav>
+
+</header>
+
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header" >
+                <h4 class="modal-title">TRANSFER INFO</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <f:form action="saveTransaction" method="POST" modelAttribute="bankTransaction">
+                    <div class="col">
+                        <c:if test="${hasError}">
+                            <tr>
+                                <td>Errors</td>
+                                <td><f:errors path="*"></f:errors></td>
+                            </tr>
+                        </c:if>
+                        TRANSACTION TYPE
+                        <f:select id="transactionType" class="form-control" path="bankTransactionType">
+                            <c:forEach items="${transactionTypes}" var="type">
+                                <f:option value="${type}" />
+                            </c:forEach>
+                        </f:select>
+
+                        FROM
+                        <f:select id="accountFrom" class="form-control" path="bankTransactionFromAccount">
+                            <c:forEach items="${accounts}" var="account">
+                                <f:option value="${account.getAccountId()}" label=" ${account.getAccountBranch().getBranchName()} ${account.getAccountType()} ${account.getAccountId()}"></f:option>
+                            </c:forEach>
+                        </f:select>
+
+                        TO
+                        <f:select id="accountTo" class="form-control" path="bankTransactionToAccount">
+                            <c:forEach items="${accounts}" var="account">
+                                <f:option value="${account.getAccountId()}" label="${account.getAccountBranch().getBranchName()} ${account.getAccountType()} ${account.getAccountId()}"></f:option>
+                            </c:forEach>
+                        </f:select>
+
+                        AMOUNT
+                        <f:input class="form-control" path="bankTransactionAmount" ></f:input>
+
+                        COMMENTS
+                        <f:input path="comments" class="form-control"></f:input>
+
+                        <input style="margin-top:25px" class="btn form-control btn-primary" type="submit" id="" value="submit"/>
+                    </div>
+                </f:form>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="close" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
-
-    <div align="center" >
-        <h1>TRANSFER FORM</h1>
-
-        <f:form action="saveTransaction" method="POST" modelAttribute="bankTransaction">
-
-        <table>
-            <!--
-            <tr>
-                <th>BankTransactionId</th>
-                <td><f:input path="bankTransactionId"></f:input></td>
-            </tr>
-            -->
-            <c:if test="${hasError}">
-                <tr>
-                    <td>Errors</td>
-                    <td><f:errors path="*"></f:errors></td>
-                </tr>
-            </c:if>
-            <tr>
-                <th>TransactionType</th>
-                <td>
-                    <f:select id="transactionType" path="bankTransactionType">
-                        <c:forEach items="${transactionTypes}" var="type">
-                            <f:option value="${type}" />
-                        </c:forEach>
-                    </f:select>
-            </tr>
-
-            <tr>
-                <th>From</th>
-                <td>
-                    <f:select id="accountFrom" path="bankTransactionFromAccount">
-                        <c:forEach items="${accounts}" var="account">
-                             <f:option value="${account.getAccountId()}" label=" ${account.getAccountBranch().getBranchName()} ${account.getAccountType()} ${account.getAccountId()}"></f:option>
-                        </c:forEach>
-                    </f:select>
-                </td>
-            </tr>
-            <tr>
-                <th>To</th>
-                <td>
-                <f:select id="accountTo" path="bankTransactionToAccount">
-                    <c:forEach items="${accounts}" var="account">
-                        <f:option value="${account.getAccountId()}" label="${account.getAccountBranch().getBranchName()} ${account.getAccountType()} ${account.getAccountId()}"></f:option>
-                    </c:forEach>
-
-                </f:select>
-                </td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td><f:input path="bankTransactionAmount" ></f:input></td>
-            </tr>
-
-            <tr>
-                <th>Comments</th>
-                <td><f:input path="comments"></f:input></td>
-            </tr>
-
-            <tr>
-                <td colspan="2" align="center"><input class="btn btn-primary" type="submit" value="submit"> </td>
-            </tr>
-        </table>
-        </f:form>
-    </div>
+</div>
 
     <div class="container-sm" align="center">
         <h2>Transaction Record</h2>
         <table class="table table-dark table-striped">
             <tr>
-                <th>ID</th>
+                <th>TRANSACTION-ID</th>
                 <th>TYPE</th>
                 <th>AMOUNT</th>
                 <th>FROM</th>
                 <th>TO</th>
                 <th>COMMENTS</th>
                 <th>DATE/TIME</th>
+                <th><button class="btn btn-success" id="makeTransfer">MAKE TRANSACTION</button></th>
 
             </tr>
             <c:forEach items="${transactions}" var="transaction">
@@ -140,7 +173,7 @@
                     <td>${transaction.getBankTransactionToAccount()}</td>
                     <td>${transaction.getComments()}</td>
                     <td>${transaction.getBankTransactionDateTime()}</td>
-
+                    <td></td>
                 </tr>
             </c:forEach>
 

@@ -21,6 +21,13 @@ public class AccountRestController {
     @Autowired
     AccountService accountService;
 
+    @RequestMapping(value = "/getAccount/{accountId}", method = RequestMethod.GET)
+    public Account getAccount(@PathVariable Long accountId){
+
+        return accountService.findById(accountId);
+    }
+
+
     @GetMapping(value = "/getAccounts", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Account>> getAccount(){
         List<Account> retrievedAccounts = accountService.findAll();
